@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title></title>
+    <script src="js/jquery.js">
+        //IMPORTAMOS JQUERY DESDE UN ARCHIVO LOCAL
+    </script>
+</head>
+
+<body>
+
+
+    <h3>Productos</h3>
+    <table id="tablaProductos" style="width:100%"></table>
+    <h3>Mis compras</h3>
+    <table id="tablaCompras" style="width:100%"></table>
+    <h3>Total</h3>
+    <p id="total"> 0 Pesos UY"</p>
+
+
+    <script type="text/javascript">
+        var productosListados = [];
+        var productosComprados = [];
+        var totalCompra = 0
+
+        function cargarComprados() {
+            $('#tablaCompras').html('');
+            for (i = 0; i < productosListados.length; i++) {
+                if (productosComprados.length > 0) {
+                    for (y = 0; y < productosComprados.length; y++) {
+                        if (productosListados[i].id == productosComprados[y]) {
+                            $('#tablaCompras').append('<tr><td> ' + productosListados[y].nombre + '</td><td> ' +
+                                productosListados[y].modelo +
+                                '</td> <td>   <input type="button" id="comprar"  value="Quitar"/> </td></tr>');
+                            totalCompra = totalCompra + productosListados[y].precio
+                            $("#total").text(totalCompra);
+                        }
+                    }
+                }
+            }
+        }
+
+        function seleccionado(idProd) {
+            productosComprados.push(idProd)
+            cargarComprados();
+        }
+
+
+        $(document).ready(function () {
+            $.get('./datosJSON/data.json', function (data) {
+                //$('#stage').html(''); 
+                $.each(data, function (index, lista) {
+                    $('#tablaProductos').append('<tr> <td style="display:none;"> ' + lista.id +
+                        '</td><td> ' + lista.nombre + '</td><td> ' + lista.marca +
+                        '</td><td> ' + lista.modelo + '</td><td> ' + lista.precio +
+                        '</td> <td>   <input type="button" id="comprar" onclick="seleccionado(' +
+                        lista.id + ')" value="Comprar"/> </td></tr>');
+                        productosListados.push({
+                        id: lista.id.toString(),
+                        nombre: lista.nombre,
+                        marca: lista.marca,
+                        modelo: lista.modelo,
+                        precio: lista.precio
+                    })
+                });
+            });
+
+
+        });
+    </script>
+</body>
+
+</html>
